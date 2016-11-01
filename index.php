@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script type="text/javascript" src="bin/app.bundle.js"></script>
+        <title></title>
+    </head>
+    <body>
+    </body>
+</html>

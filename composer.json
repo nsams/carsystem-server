@@ -1,0 +1,30 @@
+{
+    "name": "vendor/carsystem",
+    "description": "Description of project carsystem.",
+    "authors": [
+        {
+            "name": "Niko Sams",
+            "email": "niko.sams@gmail.com"
+        }
+    ],
+    "require": {
+        "koala-framework/composer-extra-assets": "v2.0.8"
+    },
+    "extra": {
+        "require-npm": {
+            "jquery": "1.*",
+            "backbone.marionette": "2.4.4",
+            "snapsvg": "*"
+        },
+        "require-dev-npm": {
+            "webpack": "*",
+            "imports-loader": "*",
+            "babel-loader": "*",
+            "babel-core": "*",
+            "babel-preset-es2015": "*",
+            "webpack-dev-server": "*",
+            "style-loader": "*",
+            "css-loader": "*"
+        }
+    }
+}
