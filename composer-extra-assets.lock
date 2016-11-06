@@ -2641,7 +2641,7 @@
             },
             "uuid": {
                 "version": "2.0.3",
-                "from": "uuid@>=2.0.2 <3.0.0",
+                "from": "uuid@*",
                 "resolved": "https://registry.npmjs.org/uuid/-/uuid-2.0.3.tgz"
             },
             "validate-npm-package-license": {

@@ -1,16 +1,19 @@
 var Backbone = require('backbone');
+var uuid = require('uuid');
 
-/*
-var app = {}; // create namespace for our app
-app.Todo = Backbone.Model.extend({
-  defaults: {
-    title: '',
-    completed: false
-  }
+var Street = Backbone.Model.extend({
+    defaults: {
+        name: '',
+        one_way: false
+    },
+    initialize: function() {
+      if (!this.get('id')) {
+          this.set('id', uuid());
+      }
+      if (!this.get('points')) {
+        this.set('points', []);
+      }
+    }
 });
-*/
-
-class Street extends Backbone.Model {
-}
 
 module.exports = Street;

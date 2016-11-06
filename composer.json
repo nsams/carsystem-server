@@ -14,7 +14,8 @@
         "require-npm": {
             "jquery": "1.*",
             "backbone.marionette": "2.4.4",
-            "snapsvg": "*"
+            "snapsvg": "*",
+            "uuid": "*"
         },
         "require-dev-npm": {
             "webpack": "*",

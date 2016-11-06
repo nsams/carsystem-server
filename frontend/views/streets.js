@@ -2,6 +2,8 @@ var Backbone = require('backbone');
 var Snap = require('snapsvg');
 require('./streets.css');
 var Toolbar = require('./streets/toolbar');
+var Street = require('../models/street')
+var Intersection = require('../models/intersection')
 
 var StreetsView = Backbone.View.extend({
     className: "kwfUp-viewStreets",
@@ -12,7 +14,7 @@ var StreetsView = Backbone.View.extend({
         Backbone.View.prototype.constructor.call(this, options);
     },
 
-    selectedStreet: null,
+    selected: null,
     movingCircle: null,
     
     events: {
@@ -26,11 +28,13 @@ var StreetsView = Backbone.View.extend({
     onClick: function(ev) {
         if (ev.target.tagName === 'line') {
             var streetId = ev.target.getAttribute('data-street-id');
-            var street = this.streets.get(streetId);
-            this.selectedStreet = street;
-            this.render();
+            if (streetId) {
+                var street = this.streets.get(streetId);
+                this.selected = street;
+                this.render();
+            }
         } else {
-            this.selectedStreet = null;
+            this.selected = null;
             this.render();
         }
     },
@@ -39,16 +43,24 @@ var StreetsView = Backbone.View.extend({
     },
     
     onMouseDown: function(ev) {
-        console.log(ev);
-        if (ev.target.tagName === 'circle') {
+        console.log(ev, this.selected);
+        if (this.selected instanceof Intersection) {
+            let targetStreetId = ev.target.getAttribute('data-street-id');
+            if (targetStreetId) {
+                let turnoffs = this.selected.get('turnoffs');
+                turnoffs.push({
+                    street_id: targetStreetId
+                });
+                this.render();
+            }                
+        } else if (ev.target.tagName === 'circle') {
             this.movingCircle = ev.target;
-        } else if (ev.ctrlKey && this.selectedStreet) {
-            let points = this.selectedStreet.get('points');
+        } else if (ev.ctrlKey && this.selected instanceof Street) {
+            let points = this.selected.get('points');
             points.push({
                 x: ev.offsetX, 
                 y: ev.offsetY
             });
-            console.log(points);
             this.render();
         }
     },
@@ -73,11 +85,20 @@ var StreetsView = Backbone.View.extend({
     },
     
     onNewStreet: function() {
-        console.log(this);
+        this.selected = new Street();
+        this.streets.add(this.selected);
+        this.render();
     },
     
     onNewIntersection: function() {
-        console.log(this);
+        if (!(this.selected instanceof Street)) {
+            alert('Vorher Straße wählen');
+            return;
+        }
+        let newIntersection = new Intersection();
+        newIntersection.set('in_street_id', this.selected.id);
+        this.intersections.add(newIntersection);
+        this.selected = newIntersection;
     },
 
     initialize: function() {
@@ -105,9 +126,9 @@ var StreetsView = Backbone.View.extend({
                     var line = s.line(prevPoint.x, prevPoint.y, point.x, point.y);
                     
                     line.attr({
-                        stroke: this.selectedStreet === street ? "#F00" : "#000",
+                        stroke: this.selected === street ? "#F00" : "#000",
                         strokeWidth: 5,
-                        'data-street-id': street.get('id')
+                        'data-street-id': street.id
                     }); 
                 }
                 prevPoint = point;
@@ -119,6 +140,7 @@ var StreetsView = Backbone.View.extend({
         this.intersections.forEach((intersection) => {
             console.log(intersection);
            let inStreet = this.streets.get(intersection.get('in_street_id'));
+           if (!inStreet) return;
            let inPoint = inStreet.get('points')[inStreet.get('points').length-1];
 
            let turnoffs = intersection.get('turnoffs');
@@ -130,7 +152,7 @@ var StreetsView = Backbone.View.extend({
                 line.attr({
                     stroke: "#666",
                     strokeWidth: 5,
-                    'data-intersection-id': intersection.get('id')
+                    'data-intersection-id': intersection.id
                 }); 
            }
         });
@@ -143,7 +165,7 @@ var StreetsView = Backbone.View.extend({
             points.forEach((point) => {
                 let circle = s.circle(point.x, point.y, 7);
                 circle.attr({
-                    'data-street-id': street.get('id'),
+                    'data-street-id': street.id,
                     'data-point-num': i
                 });
                 i++;
