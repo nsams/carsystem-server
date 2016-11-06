@@ -1,5 +1,5 @@
 <?php
-echo file_get_contents('http://10.0.0.101/servo.cgi?Nr=0&Pos=10000');
+echo file_get_contents('http://10.0.0.101/servo.cgi?Nr=0&Pos=24');
 //Nr ... Servo Nummer (0-23)
 //Pos ... Position (0-124)
 
